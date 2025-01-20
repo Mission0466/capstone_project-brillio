@@ -14,10 +14,9 @@ This project is a **MERN Stack** (MongoDB, Express, React, Node.js) web applicat
    - [Support & Chatbot](#3-support--chatbot)
    - [Data Usage & Plan Management](#4-data-usage--plan-management)
    - [Payment & Transactions](#5-payment--transactions)
-4. [Functional Requirements Mapping](#functional-requirements-mapping)
-5. [Setup & Installation](#setup--installation)
-6. [Folder Structure](#folder-structure)
-7. [License](#license)
+4. [Setup & Installation](#setup--installation)
+5. [Folder Structure](#folder-structure)
+6. [License](#license)
 
 ---
 
@@ -73,7 +72,71 @@ Each module can be developed as a separate Node.js service (or combined as neede
 
 ---
 
-For the other modules' API endpoints, functional requirements mapping, and detailed role-based logic, please refer to the full documentation in the project folder.
+### 2. Personal Information & Account Overview
+
+| Endpoint                         | HTTP    | Description                                                                                       |
+|----------------------------------|---------|---------------------------------------------------------------------------------------------------|
+| `/account`                       | GET     | Shows account overview (mobile #, status, plan type, etc.).                                      |
+| `/account/plan`                  | GET     | Displays current plan details (name, validity, remaining data/SMS/talktime).                     |
+| `/account/personal-info`         | GET     | Returns user’s personal info (email, address, alt mobile, etc.).                                 |
+| `/account/personal-info`         | PUT     | Updates personal info (address, alt mobile, etc.).                                               |
+
+#### Role-based Logic:
+- **User**: Sees and updates their own account.
+- **Admin**: May retrieve or modify any user’s account if permitted.
+
+---
+
+### 3. Support & Chatbot
+
+| Endpoint                         | HTTP    | Description                                                                                       |
+|----------------------------------|---------|---------------------------------------------------------------------------------------------------|
+| `/support/tickets`               | GET     | Retrieves all support tickets for the logged-in user (or all if admin).                          |
+| `/support/tickets`               | POST    | Creates a new support ticket.                                                                    |
+| `/support/tickets/:ticketId`     | GET     | Fetches details of a specific support ticket.                                                    |
+| `/support/tickets/:ticketId`     | PATCH   | Updates the ticket (add notes, change status, etc.).                                             |
+| `/chatbot/query`                 | POST    | Submits a user query to the FAQ chatbot; returns an automated response.                          |
+| `/chatbot/faq`                   | GET     | Retrieves frequently asked questions (static or dynamic).                                        |
+
+#### Role-based Logic:
+- **User**: Can only see and modify their own tickets.
+- **Admin**: Can see and update all tickets (e.g., escalations).
+
+---
+
+### 4. Data Usage & Plan Management
+
+| Endpoint                         | HTTP    | Description                                                                                       |
+|----------------------------------|---------|---------------------------------------------------------------------------------------------------|
+| `/usage`                         | GET     | Shows current usage stats (data, SMS, voice calls) for the logged-in user.                       |
+| `/usage/history`                 | GET     | Retrieves historical usage data (daily/monthly breakdown).                                       |
+| `/plans`                         | GET     | Lists available prepaid and postpaid plans with pricing details.                                 |
+| `/plans/:planId`                 | GET     | Gets details of a single plan.                                                                   |
+| `/plans/change`                  | POST    | Switches the user’s current plan to a new one (prepaid or postpaid).                             |
+| `/plans/top-up`                  | POST    | (Prepaid) Adds talktime, data packs, or roaming packs.                                           |
+| `/plans/upgrade`                 | PATCH   | (Postpaid) Upgrades the user’s plan (more connections, higher data, etc.).                       |
+
+#### Role-based Logic:
+- **User**: Changes their own plan and sees their own usage.
+- **Admin**: Manages plan offerings (create/update/delete) or views any user’s usage if permitted.
+
+---
+
+### 5. Payment & Transactions
+
+| Endpoint                         | HTTP    | Description                                                                                       |
+|----------------------------------|---------|---------------------------------------------------------------------------------------------------|
+| `/billing`                       | GET     | Retrieves current billing info (due dates, amounts, billing cycle).                              |
+| `/billing/statements`            | GET     | Lists all past billing statements for the logged-in user.                                        |
+| `/billing/statements/:id/download`| GET     | Downloads a specific statement as a PDF.                                                        |
+| `/transactions`                  | GET     | Returns the user’s transaction history (or all if admin).                                        |
+| `/transactions/:transactionId`   | GET     | Gets details of a specific transaction.                                                          |
+| `/transactions`                  | POST    | Makes a payment (select credit/debit/UPI).                                                       |
+| `/transactions/:transactionId/cancel`| PATCH | Cancels or reverses a pending transaction (if business logic allows).                            |
+
+#### Role-based Logic:
+- **User**: Can only access their own billing/transactions.
+- **Admin**: May view or manage all user transactions for auditing/refunds if allowed.
 
 ---
 
